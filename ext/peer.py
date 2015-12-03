@@ -6,7 +6,7 @@ Created on Sept 2, 2015
 
 import pox
 #import pox.openflow.debug
-import lib_peer_01 as broker
+import lib_peer as peer
 
 from pox.core import core
 from pox.lib.recoco.recoco import Task
@@ -15,6 +15,7 @@ from pox.lib.revent.revent import Event
 from pox.lib.revent.revent import EventMixin
 #from pox.lib.socketcapture import CaptureSocket
 
+import os
 import sys
 #import ssl
 import time
@@ -30,7 +31,7 @@ log = core.getLogger()
 def echo_cycle(con):
     def sayhello():
         #print "send echo_request"
-        con.send(broker.peer_echo_request())
+        con.send(peer.peer_echo_request())
         global t
         t = threading.Timer(2.0, sayhello)
         t.start()
@@ -41,8 +42,8 @@ def echo_cycle(con):
 # Broker Message Unpackers
 # ----------------------------------------------------------
 def make_type_to_unpacker_table ():
-    top = max(broker._message_type_to_class)
-    r = [broker._message_type_to_class[i].unpack_new for i in range(0, top + 1)]
+    top = max(peer._message_type_to_class)
+    r = [peer._message_type_to_class[i].unpack_new for i in range(0, top + 1)]
     return r
 
 unpackers = make_type_to_unpacker_table()
@@ -53,7 +54,7 @@ unpackers = make_type_to_unpacker_table()
 # ----------------------------------------------------------
 class ConnectionUp (Event):
     """
-    Event raised when the connection to a broker has been established.
+    Event raised when the connection to a peer controller has been established.
     """
     def __init__ (self, connection, msg):
         Event.__init__(self)
@@ -70,7 +71,7 @@ def handle_HELLO (con, msg):
     #con.info('peer connected: %s' %  (con.sock.getpeername()[0]))
     #con.info('peer connected')
     con.info('peer connected: handle_HELLO')
-    msg = broker.peer_features_report()
+    msg = peer.peer_features_report()
     con.send(msg)
     
 def handle_FEATURES_REPORT (con, msg):
@@ -89,16 +90,16 @@ def handle_ECHO_REQUEST (con, msg):
     #print 'broker_client01: handle_ECHO_REQUEST\n',msg
     
     reply = msg
-    reply.header_type = broker.PEER_ECHO_REPLY
+    reply.header_type = peer.PEER_ECHO_REPLY
     con.send(reply)
 
 handlers = []
 
 handlerMap = {
-    broker.PEER_HELLO : handle_HELLO,
-    broker.PEER_FEATURES_REPORT : handle_FEATURES_REPORT,
-    broker.PEER_ECHO_REPLY : handle_ECHO_REPLY,
-    broker.PEER_ECHO_REQUEST : handle_ECHO_REQUEST,
+    peer.PEER_HELLO : handle_HELLO,
+    peer.PEER_FEATURES_REPORT : handle_FEATURES_REPORT,
+    peer.PEER_ECHO_REPLY : handle_ECHO_REPLY,
+    peer.PEER_ECHO_REQUEST : handle_ECHO_REQUEST,
 }
 # ----------------------------------------------------------
 
@@ -140,7 +141,7 @@ class Connection (EventMixin):
     def send (self, data):
         if self.disconnected: return
         if type(data) is not bytes:
-            assert isinstance(data, broker.broker_header)
+            assert isinstance(data, peer.broker_header)
             data = data.pack()
         l = self.sock.send(data)
         if l != len(data):
@@ -158,7 +159,7 @@ class Connection (EventMixin):
         
         offset = 0
         while buf_len - offset >= 8:
-            if ord(self.buf[offset]) != broker.BROKER_VERSION:
+            if ord(self.buf[offset]) != peer.BROKER_VERSION:
                 log.warning("Bad Broker version (0x%02x) on Connection %s" 
                             % (ord(self.buf[offset]), self))
                 return False
@@ -185,7 +186,7 @@ class Connection (EventMixin):
             
     def __str__ (self):
         return "[Con %s %i]" % (self.sock.getpeername()[0], self.sock.getpeername()[1])
-            
+"""
 def wrap_socket (new_sock, port = 2555):
     fname = datetime.datetime.now().strftime("%Y-%m-%d-%I%M%p")
     fname += "_" + new_sock.getpeername()[0].replace(".", "_")
@@ -197,7 +198,7 @@ def wrap_socket (new_sock, port = 2555):
         traceback.print_exc()
         pass
     return new_sock
-
+"""
 class Broker_Client_Task(Task):
     def __init__(self, port = 2555, address = '0.0.0.0'):
         Task.__init__(self)
@@ -229,7 +230,8 @@ class Broker_Client_Task(Task):
         while core.running:
             try:
                 while True:
-                    for i in xrange(len(con_states)):
+                    for i in range(len(con_states)):
+                        #print 'con_states', con_states
                         if con_states[i] == 0:
                             try:
                                 #con_states[i] = 1
@@ -241,10 +243,12 @@ class Broker_Client_Task(Task):
                                 sock_clients[i] = sock_tmp
                                 #print '11111111111111111'
                                 #print 'broker_addr',broker_addr
+                                sock_tmp.settimeout(1)
                                 sock_tmp.connect(broker_addr)
                                 con_states[i] = 1
                                 #print '2222222222222222'
                             except:
+                                #print '33333'
                                 pass
                         elif con_states[i] == 1:
                             #print sock_clients
@@ -252,17 +256,16 @@ class Broker_Client_Task(Task):
                             #print 'con_states',con_states
                             try:
                                 broker_addr = sock_clients[i].getpeername()
-                                #print 'broker address',broker_addr
                                 con_states[i] = 2
                                 new_con = Connection(sock_clients[i])
                                 sockets.append(new_con)
-                                #print 'send hello'
-                                new_con.send(broker.peer_hello())    # send HELLO
+                                log.info('send hello to [%s]' % (new_con.sock.getpeername()[0]))
+                                new_con.send(peer.peer_hello())    # send HELLO
                             except:
                                 pass
                         
                     if 2 in con_states:
-                        rlist, wlist, elist = yield Select(sockets, [], sockets, 5)
+                        rlist, wlist, elist = yield Select(sockets, [], sockets, 1)
                         if len(rlist) == 0 and len(wlist) == 0 and len(elist) == 0:
                             if not core.running: break
                         
@@ -298,7 +301,7 @@ class Broker_Client_Task(Task):
 
 
 class Broker_01_Task(Task):
-    def __init__(self, port = 2444, address = '0.0.0.0'):
+    def __init__(self, port = 2555, address = '0.0.0.0'):
         Task.__init__(self)
         self.port = int(port)
         self.address = address
@@ -342,7 +345,7 @@ class Broker_01_Task(Task):
                 while True:
                     con = None
                     #print '55555555555555'
-                    rlist, wlist, elist = yield Select(sockets, [], sockets, 5)
+                    rlist, wlist, elist = yield Select(sockets, [], sockets, 1)
                     
                     if len(rlist) == 0 and len(wlist) == 0 and len(elist) == 0:
                         if not core.running: break
@@ -363,8 +366,11 @@ class Broker_01_Task(Task):
                     for con in rlist:
                         if con is listener:
                             new_sock = listener.accept()[0]
-                            if pox.openflow.debug.pcap_traces:
+                            """
+                            if pox.openflow.debug.pcap_traces:   #FIXME:
+                                print 'hhhhhhhhhhhhhhhhhhhhhh'
                                 new_sock = wrap_socket(new_sock, self.port)
+                            """
                             new_sock.setblocking(0)
                             # Note that instantiating a Connection object fires a
                             # ConnectionUp event (after negotation has completed)
@@ -415,20 +421,14 @@ _set_handlers()
 
         
 def launch (port = 2555, address = "0.0.0.0"):
-    
-    if core.hasComponent('controller') or core.hasComponent('broker'):
+    if core.hasComponent('peer_client') or core.hasComponent('peer_server'):
         return None
 
-    broker = Broker_01_Task(port = int(port), address = address)
-    core.register("broker", broker)
+    peer_server = Broker_01_Task(port = int(port), address = address)
+    core.register("peer_server", peer_server)
     
-    peers = '192.168.109.228, 192.168.109.229'
+    peers = '192.168.109.228,192.168.109.229'
     peers = peers.split(',')
     log.info('need to connect peers: %s' % (peers))
-    controller = Broker_Client_Task(port = int(port), address = peers)
-    core.register("controller", controller)
-    
-    #print core.hasComponent("broker")
-    #print core.hasComponent("controller")
-    
-    #return controller
+    peer_client = Broker_Client_Task(port = int(port), address = peers)
+    core.register("peer_client", peer_client)
