@@ -1,0 +1,116 @@
+!SESSION 2015-12-02 14:21:15.101 -----------------------------------------------
+eclipse.buildId=4.4.2.M20150204-1700
+java.version=1.7.0_71
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=zh_CN
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -data D:\workspace\POX\PCTRL -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY org.eclipse.egit.mylyn.ui 4 0 2015-12-02 14:21:15.976
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: org.eclipse.egit.mylyn.ui [508]
+  Unresolved requirement: Import-Package: org.eclipse.egit.ui.internal.commit; version="[3.4.2,3.5.0)"
+    -> Export-Package: org.eclipse.egit.ui.internal.commit; bundle-version="3.4.2.201412180340-r"; bundle-symbolic-name="org.eclipse.egit.ui"; version="3.4.2"; x-friends:="org.eclipse.egit.mylyn.ui"
+       org.eclipse.egit.ui [509]
+         No resolution report for the bundle.  Unresolved requirement: Import-Package: org.eclipse.egit.ui; version="[3.4.2,3.5.0)"
+    -> Export-Package: org.eclipse.egit.ui; bundle-version="3.4.2.201412180340-r"; bundle-symbolic-name="org.eclipse.egit.ui"; version="3.4.2"; x-friends:="org.eclipse.egit.mylyn.ui"
+  Unresolved requirement: Import-Package: org.eclipse.egit.ui.internal.synchronize.model; version="[3.4.2,3.5.0)"
+    -> Export-Package: org.eclipse.egit.ui.internal.synchronize.model; bundle-version="3.4.2.201412180340-r"; bundle-symbolic-name="org.eclipse.egit.ui"; version="3.4.2"; x-friends:="org.eclipse.egit.mylyn.ui"
+  Bundle was not resolved because of a uses contraint violation.
+  org.osgi.service.resolver.ResolutionException: Uses constraint violation. Unable to resolve resource org.eclipse.egit.ui [osgi.identity; osgi.identity="org.eclipse.egit.ui"; type="osgi.bundle"; version:Version="3.4.2.201412180340-r"; singleton:="true"] because it is exposed to package 'com.jcraft.jsch' from resources com.jcraft.jsch [osgi.identity; osgi.identity="com.jcraft.jsch"; type="osgi.bundle"; version:Version="0.1.51.v201410302000"] and com.jcraft.jsch [osgi.identity; osgi.identity="com.jcraft.jsch"; type="osgi.bundle"; version:Version="0.1.50.v201403120620"] via two dependency chains.
+
+Chain 1:
+  org.eclipse.egit.ui [osgi.identity; osgi.identity="org.eclipse.egit.ui"; type="osgi.bundle"; version:Version="3.4.2.201412180340-r"; singleton:="true"]
+    require: (&(osgi.wiring.bundle=com.jcraft.jsch)(&(bundle-version>=0.1.37)(!(bundle-version>=0.2.0))))
+     |
+    provide: osgi.wiring.bundle: com.jcraft.jsch
+  com.jcraft.jsch [osgi.identity; osgi.identity="com.jcraft.jsch"; type="osgi.bundle"; version:Version="0.1.51.v201410302000"]
+
+Chain 2:
+  org.eclipse.egit.ui [osgi.identity; osgi.identity="org.eclipse.egit.ui"; type="osgi.bundle"; version:Version="3.4.2.201412180340-r"; singleton:="true"]
+    require: (&(osgi.wiring.bundle=org.eclipse.jsch.core)(&(bundle-version>=1.1.100)(!(bundle-version>=2.0.0))))
+     |
+    provide: osgi.wiring.bundle; osgi.wiring.bundle="org.eclipse.jsch.core"; bundle-version:Version="1.1.500.v20131112-1442"; singleton:="true"
+  org.eclipse.jsch.core [osgi.identity; osgi.identity="org.eclipse.jsch.core"; type="osgi.bundle"; version:Version="1.1.500.v20131112-1442"; singleton:="true"]
+    require: (&(osgi.wiring.bundle=com.jcraft.jsch)(&(bundle-version>=0.1.50)(!(bundle-version>=1.0.0))))
+     |
+    provide: osgi.wiring.bundle: com.jcraft.jsch
+  com.jcraft.jsch [osgi.identity; osgi.identity="com.jcraft.jsch"; type="osgi.bundle"; version:Version="0.1.50.v201403120620"]
+	at org.eclipse.osgi.container.Module.start(Module.java:434)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:1582)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:1561)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.doContainerStartLevel(ModuleContainer.java:1533)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1476)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:340)
+
+!ENTRY org.eclipse.egit.ui 4 0 2015-12-02 14:21:16.048
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: org.eclipse.egit.ui [509]
+  Bundle was not resolved because of a uses contraint violation.
+  org.osgi.service.resolver.ResolutionException: Uses constraint violation. Unable to resolve resource org.eclipse.egit.ui [osgi.identity; osgi.identity="org.eclipse.egit.ui"; type="osgi.bundle"; version:Version="3.4.2.201412180340-r"; singleton:="true"] because it is exposed to package 'com.jcraft.jsch' from resources com.jcraft.jsch [osgi.identity; osgi.identity="com.jcraft.jsch"; type="osgi.bundle"; version:Version="0.1.51.v201410302000"] and com.jcraft.jsch [osgi.identity; osgi.identity="com.jcraft.jsch"; type="osgi.bundle"; version:Version="0.1.50.v201403120620"] via two dependency chains.
+
+Chain 1:
+  org.eclipse.egit.ui [osgi.identity; osgi.identity="org.eclipse.egit.ui"; type="osgi.bundle"; version:Version="3.4.2.201412180340-r"; singleton:="true"]
+    require: (&(osgi.wiring.bundle=com.jcraft.jsch)(&(bundle-version>=0.1.37)(!(bundle-version>=0.2.0))))
+     |
+    provide: osgi.wiring.bundle: com.jcraft.jsch
+  com.jcraft.jsch [osgi.identity; osgi.identity="com.jcraft.jsch"; type="osgi.bundle"; version:Version="0.1.51.v201410302000"]
+
+Chain 2:
+  org.eclipse.egit.ui [osgi.identity; osgi.identity="org.eclipse.egit.ui"; type="osgi.bundle"; version:Version="3.4.2.201412180340-r"; singleton:="true"]
+    require: (&(osgi.wiring.bundle=org.eclipse.jsch.core)(&(bundle-version>=1.1.100)(!(bundle-version>=2.0.0))))
+     |
+    provide: osgi.wiring.bundle; osgi.wiring.bundle="org.eclipse.jsch.core"; bundle-version:Version="1.1.500.v20131112-1442"; singleton:="true"
+  org.eclipse.jsch.core [osgi.identity; osgi.identity="org.eclipse.jsch.core"; type="osgi.bundle"; version:Version="1.1.500.v20131112-1442"; singleton:="true"]
+    require: (&(osgi.wiring.bundle=com.jcraft.jsch)(&(bundle-version>=0.1.50)(!(bundle-version>=1.0.0))))
+     |
+    provide: osgi.wiring.bundle: com.jcraft.jsch
+  com.jcraft.jsch [osgi.identity; osgi.identity="com.jcraft.jsch"; type="osgi.bundle"; version:Version="0.1.50.v201403120620"]
+	at org.eclipse.osgi.container.Module.start(Module.java:434)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:1582)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:1561)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.doContainerStartLevel(ModuleContainer.java:1533)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1476)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:340)
+
+!ENTRY org.eclipse.mylyn.git.ui 4 0 2015-12-02 14:21:16.215
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: org.eclipse.mylyn.git.ui [575]
+  Unresolved requirement: Require-Bundle: org.eclipse.egit.ui
+    -> Bundle-SymbolicName: org.eclipse.egit.ui; bundle-version="3.4.2.201412180340-r"; singleton:="true"
+       org.eclipse.egit.ui [509]
+         No resolution report for the bundle.  Bundle was not resolved because of a uses contraint violation.
+  org.osgi.service.resolver.ResolutionException: Uses constraint violation. Unable to resolve resource org.eclipse.egit.ui [osgi.identity; osgi.identity="org.eclipse.egit.ui"; type="osgi.bundle"; version:Version="3.4.2.201412180340-r"; singleton:="true"] because it is exposed to package 'com.jcraft.jsch' from resources com.jcraft.jsch [osgi.identity; osgi.identity="com.jcraft.jsch"; type="osgi.bundle"; version:Version="0.1.51.v201410302000"] and com.jcraft.jsch [osgi.identity; osgi.identity="com.jcraft.jsch"; type="osgi.bundle"; version:Version="0.1.50.v201403120620"] via two dependency chains.
+
+Chain 1:
+  org.eclipse.egit.ui [osgi.identity; osgi.identity="org.eclipse.egit.ui"; type="osgi.bundle"; version:Version="3.4.2.201412180340-r"; singleton:="true"]
+    require: (&(osgi.wiring.bundle=com.jcraft.jsch)(&(bundle-version>=0.1.37)(!(bundle-version>=0.2.0))))
+     |
+    provide: osgi.wiring.bundle: com.jcraft.jsch
+  com.jcraft.jsch [osgi.identity; osgi.identity="com.jcraft.jsch"; type="osgi.bundle"; version:Version="0.1.51.v201410302000"]
+
+Chain 2:
+  org.eclipse.egit.ui [osgi.identity; osgi.identity="org.eclipse.egit.ui"; type="osgi.bundle"; version:Version="3.4.2.201412180340-r"; singleton:="true"]
+    require: (&(osgi.wiring.bundle=org.eclipse.jsch.core)(&(bundle-version>=1.1.100)(!(bundle-version>=2.0.0))))
+     |
+    provide: osgi.wiring.bundle; osgi.wiring.bundle="org.eclipse.jsch.core"; bundle-version:Version="1.1.500.v20131112-1442"; singleton:="true"
+  org.eclipse.jsch.core [osgi.identity; osgi.identity="org.eclipse.jsch.core"; type="osgi.bundle"; version:Version="1.1.500.v20131112-1442"; singleton:="true"]
+    require: (&(osgi.wiring.bundle=com.jcraft.jsch)(&(bundle-version>=0.1.50)(!(bundle-version>=1.0.0))))
+     |
+    provide: osgi.wiring.bundle: com.jcraft.jsch
+  com.jcraft.jsch [osgi.identity; osgi.identity="com.jcraft.jsch"; type="osgi.bundle"; version:Version="0.1.50.v201403120620"]
+	at org.eclipse.osgi.container.Module.start(Module.java:434)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:1582)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:1561)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.doContainerStartLevel(ModuleContainer.java:1533)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1476)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:340)
